@@ -7,7 +7,7 @@ from datetime import datetime
 from feature_utils import create_features, prepare_input_data
 from model_utils import EnsemblePredictor
 
-MODEL_DIR = os.path.join(os.path.dirname(__file__), 'model_components')
+MODEL_DIR = os.path.join(os.path.dirname(__file__), 'model_components_v2')
 
 PREDICTION_THRESHOLD = 0.716
 

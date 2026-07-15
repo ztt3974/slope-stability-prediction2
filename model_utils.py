@@ -3,7 +3,14 @@ import pandas as pd
 import joblib
 import os
 
+import xgboost as xgb
+from xgboost import XGBClassifier
+import lightgbm as lgb
+from lightgbm import LGBMClassifier
+from catboost import CatBoostClassifier
 from sklearn.preprocessing import RobustScaler
+from sklearn.ensemble import (RandomForestClassifier, ExtraTreesClassifier, 
+                               GradientBoostingClassifier)
 
 
 class EnsemblePredictor:
@@ -17,14 +24,31 @@ class EnsemblePredictor:
         self.scaler = joblib.load(os.path.join(self.model_dir, 'scaler.pkl'))
         self.weights = joblib.load(os.path.join(self.model_dir, 'weights.pkl'))
         
-        model_files = ['model_xgb.pkl', 'model_lgb.pkl', 'model_cat.pkl', 
-                       'model_rf.pkl', 'model_et.pkl', 'model_gb.pkl']
+        xgb_path = os.path.join(self.model_dir, 'model_xgb.json')
+        if os.path.exists(xgb_path):
+            self.models['xgb'] = xgb.XGBClassifier()
+            self.models['xgb'].load_model(xgb_path)
         
-        for mf in model_files:
-            path = os.path.join(self.model_dir, mf)
-            if os.path.exists(path):
-                name = mf.replace('model_', '').replace('.pkl', '')
-                self.models[name] = joblib.load(path)
+        cat_path = os.path.join(self.model_dir, 'model_cat.cbm')
+        if os.path.exists(cat_path):
+            self.models['cat'] = CatBoostClassifier()
+            self.models['cat'].load_model(cat_path)
+        
+        lgb_path = os.path.join(self.model_dir, 'model_lgb.pkl')
+        if os.path.exists(lgb_path):
+            self.models['lgb'] = joblib.load(lgb_path)
+        
+        rf_path = os.path.join(self.model_dir, 'model_rf.pkl')
+        if os.path.exists(rf_path):
+            self.models['rf'] = joblib.load(rf_path)
+        
+        et_path = os.path.join(self.model_dir, 'model_et.pkl')
+        if os.path.exists(et_path):
+            self.models['et'] = joblib.load(et_path)
+        
+        gb_path = os.path.join(self.model_dir, 'model_gb.pkl')
+        if os.path.exists(gb_path):
+            self.models['gb'] = joblib.load(gb_path)
         
         return self
 
