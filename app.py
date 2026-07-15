@@ -5,15 +5,16 @@ import joblib
 import os
 from datetime import datetime
 from feature_utils import create_features, prepare_input_data
-from model_utils import OptimizedEnsemble
+from model_utils import EnsemblePredictor
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), 'ipso_bp_model_output', 'ipso_bp_ensemble_model.pkl')
+MODEL_DIR = os.path.join(os.path.dirname(__file__), 'model_components')
 
 PREDICTION_THRESHOLD = 0.716
 
 def load_model():
     try:
-        model = joblib.load(MODEL_PATH)
+        model = EnsemblePredictor(MODEL_DIR)
+        model.load()
         return model
     except Exception as e:
         st.error(f"Failed to load model: {str(e)}")
